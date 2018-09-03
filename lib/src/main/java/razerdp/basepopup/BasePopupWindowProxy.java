@@ -11,8 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import java.lang.reflect.Field;
-
+import razerdp.hook.PopupReflectionHelper;
 import razerdp.util.PopupUtil;
 import razerdp.util.log.LogTag;
 import razerdp.util.log.PopupLogUtil;
@@ -197,12 +196,13 @@ abstract class BasePopupWindowProxy extends PopupWindow {
     private void tryToProxyWindowManagerMethod(PopupWindow popupWindow) {
         try {
             if (mController == null || hackWindowManager != null) return;
-            Field fieldWindowManager = PopupWindow.class.getDeclaredField("mWindowManager");
-            fieldWindowManager.setAccessible(true);
-            final WindowManager windowManager = (WindowManager) fieldWindowManager.get(popupWindow);
-            if (windowManager == null) return;
+            PopupReflectionHelper popupReflectionHelper = PopupReflectionHelper.create();
+            WindowManager windowManager = (WindowManager) popupReflectionHelper.getField(PopupWindow.class, popupWindow, "mWindowManager");
+            if (windowManager == null) {
+                return;
+            }
             hackWindowManager = new HackWindowManager(windowManager, mController);
-            fieldWindowManager.set(popupWindow, hackWindowManager);
+            popupReflectionHelper.setField(PopupWindow.class, popupWindow, "mWindowManager", hackWindowManager);
             PopupLogUtil.trace(LogTag.i, TAG, "尝试代理WindowManager成功");
         } catch (Exception e) {
             e.printStackTrace();

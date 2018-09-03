@@ -9,6 +9,13 @@ android {
         targetSdkVersion 27
         versionCode 23
         versionName "2.0.1-alpha1"
+
+        externalNativeBuild {
+            cmake {
+                //最新的NDK r17版本，已经去掉了armeabi、mips、mips64的ABI支持。
+                abiFilters 'armeabi-v7a','arm64-v8a','x86'
+            }
+        }
     }
     buildTypes {
         release {
@@ -18,6 +25,25 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            jni.srcDirs = [] //disable automatic ndk-build call
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
