@@ -30,6 +30,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jni_output/${ANDROID
 # 通配符寻找所有cpp
 file(GLOB cppSrc "${PROJECT_SOURCE_DIR}/*.cpp")
 
+
 MESSAGE(STATUS "cpp路径： ${cppSrc}")
 
 # 引入log android库
@@ -37,7 +38,7 @@ find_library(log-lib log )
 find_library(android-lib android )
 
 # 主工程
-add_library(PopupNdkHook SHARED ${cppSrc} )
+add_library(PopupNdkHook SHARED ${cppSrc})
 
 #链接预编译和系统库
 target_link_libraries(PopupNdkHook ${log-lib} ${android-lib})
